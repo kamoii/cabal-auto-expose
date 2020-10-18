@@ -114,7 +114,7 @@ moduleNamesToExpose extensions =
       splitDirectories . dropExtension
 
 -- | Recursively collect the files in a directory, optionally excluding some
--- files. Symlinks are ignored and collected paths are relative to the search
+-- files. Collected paths are relative to the search
 -- directory, eg. if the search directory is @\/home\/user\/myproject\/src@ the path
 -- @\/home\/user\/myproject\/src\/A\/B\/C.hs@ is returned as @A\/B\/C.hs@ so it can
 -- converted by 'moduleNamesToExpose' to a valid module name.
@@ -134,7 +134,7 @@ getDirectoryContents dir excludedDirs = do
             (catch
               (withCurrentDirectory f $ do
                  contents <-
-                   (listDirectory >=> filterM (notM . pathIsSymbolicLink) >=> mapM makeAbsolute) f
+                   (listDirectory >=> mapM makeAbsolute) f
                  go (contents ++ fs) accum)
               (\(_ :: IOException) -> go fs accum))
             (go fs (f:accum))
@@ -448,4 +448,3 @@ sourceExtensions = ["hs","lhs"]
 -- | Backpack signature extensions, currently 'hsig' and 'lhsig'
 hsigExtensions :: [String]
 hsigExtensions = ["hsig","lhsig"]
-
